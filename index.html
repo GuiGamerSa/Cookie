@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cookie Clicker</title>
+    <link rel="icon" href="src/cookie.png" type="image/png" sizes="16x16">
+    <script> let cookies = 0; let multiplicador = 1; </script>
+    <style>
+        button.cookie {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            font-size: 20px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+            background-image: url(src/cookie.png);  
+            background-size: 140%;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+        button.cookie:active {
+            transform: scale(0.95);
+        }
+        button.update {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            width: 100px;
+            height: 30px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+        }
+        button.update:active {
+            transform: scale(0.95);
+        }
+        button.update:hover {
+            background-color: #c59255;
+            color: #000000;
+            transition: transform 0.1s ease;
+        }
+        p {
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        span {
+            font-weight: bold;
+        }  
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #c59255;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: #f2e7da;
+            padding: 20px;
+            border-radius: 10px;
+            border: 3px solid #000000;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+        }
+        .container h1 {
+            margin-bottom: 20px;
+        }
+        .container p {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+    <h1>Cookie Clicker</h1>
+    <button class="cookie" onclick="cookies = cookies + multiplicador; updateCookies()" wait="6000"></button>
+    <p>Cookies: <span id="cookies">0</span></p>
+    <p>Loja:</p>
+    <button class="update" onclick="update1()" wait="6000">Update 1</button>
+    <button class="update" onclick="update2()" wait="6000">Update 2</button>
+    <button class="update" onclick="update3()" wait="6000">Update 3</button>
+    </div>
+    <script>
+        function updateCookies() {
+            document.getElementById("cookies").textContent = cookies;
+        }
+        function update1() {
+            if (cookies < 10) {
+                alert("Não tens cookies suficientes");
+                return;
+            }
+            cookies = cookies - 10;
+            multiplicador = multiplicador + 1;
+            updateCookies();
+        }
+        function update2() {
+            if (cookies < 100) {
+                alert("Não tens cookies suficientes");
+                return;
+            }
+            cookies = cookies - 100;
+            multiplicador = multiplicador * 2;
+            updateCookies();
+        }
+        function update3() {
+            if (cookies < 1000) {
+                alert("Não tens cookies suficientes");
+                return;
+            }
+            cookies = cookies - 1000;
+            multiplicador = multiplicador * 4;
+            updateCookies();
+        }
+    </script>
+</body>
+</html>
