@@ -4,27 +4,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookie Clicker</title>
-    <link rel="icon" href="cookie.png" type="image/png" sizes="16x16">
-    <script> let cookies = 0; let multiplicador = 1; </script>
+    <link rel="icon" href="src/cookie.png" type="image/png" sizes="16x16">
     <style>
         button.cookie {
             margin-bottom: 10px;
             margin-top: 10px;
-            width: 100px;
-            height: 100px;
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 1px solid #000;
-            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            border: 2px solid #000;
+            box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.2);
             transition: transform 0.1s ease;
-            background-image: url(cookie.png);  
+            background-image: url(src/cookie.png);  
             background-size: 140%;
             background-position: center;
             background-repeat: no-repeat;
+        }
+        button.cookie:hover {
+            transform: scale(1.05);
         }
         button.cookie:active {
             transform: scale(0.95);
@@ -32,16 +34,18 @@
         button.update {
             margin-bottom: 10px;
             margin-top: 10px;
-            width: 100px;
-            height: 30px;
+            width: 110px;
+            height: 35px;
             border-radius: 5px;
-            font-size: 16px;
+            font-size: 15px;
             cursor: pointer;
             align-items: center;
             justify-content: center;
             border: 1px solid #000;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
             transition: transform 0.1s ease;
+            background-color: #f5f5f5;
+            font-weight: 600;
         }
         button.update:active {
             transform: scale(0.95);
@@ -49,6 +53,30 @@
         button.update:hover {
             background-color: #c59255;
             color: #000000;
+            transition: transform 0.1s ease;
+        }
+        button.trabalhador {
+            margin-bottom: 10px;
+            margin-top: 10px;
+            width: 120px;
+            height: 38px;
+            border-radius: 5px;
+            font-size: 15px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+            background-color: #7cb342;
+            color: white;
+            font-weight: 600;
+        }
+        button.trabalhador:active {
+            transform: scale(0.95);
+        }
+        button.trabalhador:hover {
+            background-color: #558b2f;
             transition: transform 0.1s ease;
         }
         p {
@@ -63,69 +91,386 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             background-color: #c59255;
+            padding: 20px;
         }
         .container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             background-color: #f2e7da;
             padding: 20px;
             border-radius: 10px;
             border: 3px solid #000000;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            max-width: 1200px;
+            width: 100%;
         }
         .container h1 {
             margin-bottom: 20px;
+            text-align: center;
         }
         .container p {
             margin-bottom: 10px;
         }
+        .game-layout {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .left-panel, .center-panel, .right-panel {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            min-height: 400px;
+        }
+        .left-panel {
+            flex: 1;
+        }
+        .center-panel {
+            flex: 1;
+            justify-content: center;
+        }
+        .right-panel {
+            flex: 1;
+        }
+        .panel-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .cookie-display {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .info-text {
+            font-size: 14px;
+            text-align: center;
+            margin: 5px 0;
+        }
+        
+        /* Responsividade para telas menores */
+        @media (max-width: 768px) {
+            .game-layout {
+                flex-direction: column;
+                align-items: center;
+            }
+            .left-panel, .center-panel, .right-panel {
+                width: 100%;
+                min-height: auto;
+                margin-bottom: 15px;
+            }
+        }
     </style>
+    <script>
+        // Variáveis globais do jogo
+        var cookies = 0;
+        var multiplicador = 1;
+        var update1Cost = 15;
+        var update2Cost = 100;
+        var update3Cost = 500;
+        var update4Cost = 2000;
+        var update5Cost = 10000;
+        
+        // Variáveis dos trabalhadores
+        var trabalhador1Price = 50;
+        var trabalhador1BaseValue = 0.5; // Valor base do trabalhador 1
+        var trabalhador1Count = 0;
+        
+        var trabalhador2Price = 300;
+        var trabalhador2BaseValue = 2; // Valor base do trabalhador 2
+        var trabalhador2Count = 0;
+        
+        var trabalhador3Price = 1500;
+        var trabalhador3BaseValue = 8; // Valor base do trabalhador 3
+        var trabalhador3Count = 0;
+        
+        var totalCookiesPerSecond = 0;
+        
+        // Função para formatar números grandes
+        function formatNumber(num) {
+            const units = [
+            { value: 1e303, symbol: "Ce" },  // Centilhão
+            { value: 1e300, symbol: "Nn" },  // Nonagintilhão
+            { value: 1e297, symbol: "Og" },  // Octogintilhão
+            { value: 1e294, symbol: "Sxg" }, // Septuagintilhão
+            { value: 1e291, symbol: "Sg" },  // Sexagintilhão
+            { value: 1e288, symbol: "Qn" },  // Quinquagintilhão
+            { value: 1e285, symbol: "Qd" },  // Quadragintilhão
+            { value: 1e282, symbol: "Tn" },  // Trigintilhão
+            { value: 1e279, symbol: "Vg" },  // Vigintilhão
+            { value: 1e276, symbol: "DcO" }, // Decilionésimo octilhão
+            { value: 1e273, symbol: "NnO" }, // Nonilhão (estendido)
+            { value: 1e270, symbol: "O"  },  // Octilhão
+            { value: 1e267, symbol: "Sx" },  // Septilhão
+            { value: 1e264, symbol: "S"  },  // Sextilhão
+            { value: 1e261, symbol: "Qi" },  // Quintilhão
+            { value: 1e258, symbol: "Qa" },  // Quadrilhão
+            { value: 1e255, symbol: "T"  },  // Trilhão
+            { value: 1e252, symbol: "B"  },  // Bilhão (expandido)
+            { value: 1e249, symbol: "M"  },  // Milhão (expandido)
+            { value: 1e246, symbol: "k"  },  // Milhar (expandido)
+            { value: 1e33,  symbol: "Dc" },  // Decilhão
+            { value: 1e30,  symbol: "N"  },  // Nonilhão
+            { value: 1e27,  symbol: "O"  },  // Octilhão
+            { value: 1e24,  symbol: "Sx" },  // Septilhão
+            { value: 1e21,  symbol: "S"  },  // Sextilhão
+            { value: 1e18,  symbol: "Qi" },  // Quintilhão
+            { value: 1e15,  symbol: "Qa" },  // Quadrilhão
+            { value: 1e12,  symbol: "T"  },  // Trilhão
+            { value: 1e9,   symbol: "B"  },  // Bilhão
+            { value: 1e6,   symbol: "M"  },  // Milhão
+            { value: 1e3,   symbol: "k"  }   // Milhar
+            ];
+
+            for (let i = 0; i < units.length; i++) {
+                if (num >= units[i].value) {
+                    return (num / units[i].value).toFixed(2) + units[i].symbol;
+                }
+            }
+
+            return Math.floor(num).toString();
+        }
+
+        
+        // Função para clicar no cookie
+        function clickCookie() {
+            cookies = cookies + multiplicador;
+            updateCookies();
+        }
+        
+        // Função para atualizar a interface
+        function updateCookies() {
+            document.getElementById("cookies").textContent = formatNumber(cookies);
+            document.getElementById("multiplicador").textContent = formatNumber(multiplicador);
+            document.getElementById("update1Text").textContent = formatNumber(update1Cost);
+            document.getElementById("update2Text").textContent = formatNumber(update2Cost);
+            document.getElementById("update3Text").textContent = formatNumber(update3Cost);
+            document.getElementById("update4Text").textContent = formatNumber(update4Cost);
+            document.getElementById("update5Text").textContent = formatNumber(update5Cost);
+            
+            // Atualizar informações dos trabalhadores
+            document.getElementById("trabalhador1Price").textContent = formatNumber(trabalhador1Price);
+            document.getElementById("trabalhador1Value").textContent = trabalhador1BaseValue.toFixed(1);
+            document.getElementById("trabalhador1Count").textContent = trabalhador1Count;
+            
+            document.getElementById("trabalhador2Price").textContent = formatNumber(trabalhador2Price);
+            document.getElementById("trabalhador2Value").textContent = trabalhador2BaseValue.toFixed(1);
+            document.getElementById("trabalhador2Count").textContent = trabalhador2Count;
+            
+            document.getElementById("trabalhador3Price").textContent = formatNumber(trabalhador3Price);
+            document.getElementById("trabalhador3Value").textContent = trabalhador3BaseValue.toFixed(1);
+            document.getElementById("trabalhador3Count").textContent = trabalhador3Count;
+            
+            document.getElementById("totalPerSecond").textContent = formatNumber(totalCookiesPerSecond);
+        }
+        
+        // Upgrades de multiplicador
+        function update1() {
+            if (cookies < update1Cost) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update1Cost) + " cookies.");
+                return;
+            }
+            cookies = cookies - update1Cost;
+            multiplicador = multiplicador + 1;
+            update1Cost = Math.floor(update1Cost * 1.5);
+            updateCookies();
+        }
+        
+        function update2() {
+            if (cookies < update2Cost) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update2Cost) + " cookies.");
+                return;
+            }
+            cookies = cookies - update2Cost;
+            multiplicador = multiplicador + 5;
+            update2Cost = Math.floor(update2Cost * 1.8);
+            updateCookies();
+        }
+        
+        function update3() {
+            if (cookies < update3Cost) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update3Cost) + " cookies.");
+                return;
+            }
+            cookies = cookies - update3Cost;
+            multiplicador = multiplicador * 2;
+            update3Cost = Math.floor(update3Cost * 2);
+            updateCookies();
+        }
+        
+        function update4() {
+            if (cookies < update4Cost) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update4Cost) + " cookies.");
+                return;
+            }
+            cookies = cookies - update4Cost;
+            multiplicador = multiplicador * 3;
+            update4Cost = Math.floor(update4Cost * 2.5);
+            updateCookies();
+        }
+        
+        function update5() {
+            if (cookies < update5Cost) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update5Cost) + " cookies.");
+                return;
+            }
+            cookies = cookies - update5Cost;
+            multiplicador = multiplicador * 5;
+            update5Cost = Math.floor(update5Cost * 3);
+            updateCookies();
+        }
+        
+        // Função para calcular o total de cookies por segundo
+        function calculateTotalPerSecond() {
+            totalCookiesPerSecond = (trabalhador1BaseValue * trabalhador1Count) + 
+                                   (trabalhador2BaseValue * trabalhador2Count) + 
+                                   (trabalhador3BaseValue * trabalhador3Count);
+        }
+        
+        // Trabalhador 1 - aumenta valor base em 3% a cada compra
+        function buyTrabalhador1() {
+            if (cookies < trabalhador1Price) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador1Price) + " cookies.");
+                return;
+            }
+            
+            cookies -= trabalhador1Price;
+            trabalhador1Count++;
+            
+            // Aumenta o valor base em 3% a cada compra
+            trabalhador1BaseValue = trabalhador1BaseValue * 1.03;
+            
+            // Aumenta o preço para a próxima compra (12%)
+            trabalhador1Price = Math.floor(trabalhador1Price * 1.12);
+            
+            calculateTotalPerSecond();
+            updateCookies();
+        }
+        
+        // Trabalhador 2 - aumenta valor base em 5% a cada compra
+        function buyTrabalhador2() {
+            if (cookies < trabalhador2Price) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador2Price) + " cookies.");
+                return;
+            }
+            
+            cookies -= trabalhador2Price;
+            trabalhador2Count++;
+            
+            // Aumenta o valor base em 5% a cada compra
+            trabalhador2BaseValue = trabalhador2BaseValue * 1.05;
+            
+            // Aumenta o preço para a próxima compra (15%)
+            trabalhador2Price = Math.floor(trabalhador2Price * 1.15);
+            
+            calculateTotalPerSecond();
+            updateCookies();
+        }
+        
+        // Trabalhador 3 - aumenta valor base em 7% a cada compra
+        function buyTrabalhador3() {
+            if (cookies < trabalhador3Price) {
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador3Price) + " cookies.");
+                return;
+            }
+            
+            cookies -= trabalhador3Price;
+            trabalhador3Count++;
+            
+            // Aumenta o valor base em 7% a cada compra
+            trabalhador3BaseValue = trabalhador3BaseValue * 1.07;
+            
+            // Aumenta o preço para a próxima compra (18%)
+            trabalhador3Price = Math.floor(trabalhador3Price * 1.18);
+            
+            calculateTotalPerSecond();
+            updateCookies();
+        }
+        
+        // Inicializar o jogo quando a página carregar
+        window.onload = function() {
+            // Gerar cookies automaticamente a cada segundo
+            setInterval(function() {
+                if (totalCookiesPerSecond > 0) {
+                    cookies += totalCookiesPerSecond;
+                    updateCookies();
+                }
+            }, 1000);
+        };
+    </script>
 </head>
 <body>
     <div class="container">
-    <h1>Cookie Clicker</h1>
-    <button class="cookie" onclick="cookies = cookies + multiplicador; updateCookies()" wait="6000"></button>
-    <p>Cookies: <span id="cookies">0</span></p>
-    <p>Loja:</p>
-    <button class="update" onclick="update1()" wait="6000">Update 1</button>
-    <button class="update" onclick="update2()" wait="6000">Update 2</button>
-    <button class="update" onclick="update3()" wait="6000">Update 3</button>
+        <h1>Cookie Clicker</h1>
+        
+        <div class="game-layout">
+            <!-- Painel Esquerdo: Updates -->
+            <div class="left-panel">
+                <div class="panel-title">🔧 Upgrades</div>
+                <button class="update" onclick="update1()">Cursor</button>
+                <p class="info-text">Custo: <span id="update1Text">15</span><br>+1 por clique</p>
+                
+                <button class="update" onclick="update2()">Luvas</button>
+                <p class="info-text">Custo: <span id="update2Text">100</span><br>+5 por clique</p>
+                
+                <button class="update" onclick="update3()">Dobro</button>
+                <p class="info-text">Custo: <span id="update3Text">500</span><br>×2 multiplicador</p>
+                
+                <button class="update" onclick="update4()">Triplo</button>
+                <p class="info-text">Custo: <span id="update4Text">2000</span><br>×3 multiplicador</p>
+                
+                <button class="update" onclick="update5()">Mega</button>
+                <p class="info-text">Custo: <span id="update5Text">10000</span><br>×5 multiplicador</p>
+            </div>
+            
+            <!-- Painel Central: Cookie -->
+            <div class="center-panel">
+                <div class="cookie-display">
+                    Cookies: <span id="cookies">0</span>
+                </div>
+                <button class="cookie" onclick="clickCookie()"></button>
+                <p style="margin-top: 15px; font-size: 16px;">Cliques: <span id="multiplicador">1</span> por clique</p>
+                <p style="margin-top: 10px; font-size: 18px; font-weight: bold; color: #7cb342;">
+                    <span id="totalPerSecond">0</span> cookies/s
+                </p>
+            </div>
+            
+            <!-- Painel Direito: Trabalhadores -->
+            <div class="right-panel">
+                <div class="panel-title">👷 Trabalhadores</div>
+                
+                <button class="trabalhador" onclick="buyTrabalhador1()">Aprendiz</button>
+                <p class="info-text">
+                    Preço: <span id="trabalhador1Price">50</span><br>
+                    Gera: <span id="trabalhador1Value">0.5</span> c/s<br>
+                    Comprados: <span id="trabalhador1Count">0</span>
+                </p>
+                
+                <button class="trabalhador" onclick="buyTrabalhador2()">Padeiro</button>
+                <p class="info-text">
+                    Preço: <span id="trabalhador2Price">300</span><br>
+                    Gera: <span id="trabalhador2Value">2</span> c/s<br>
+                    Comprados: <span id="trabalhador2Count">0</span>
+                </p>
+                
+                <button class="trabalhador" onclick="buyTrabalhador3()">Fábrica</button>
+                <p class="info-text">
+                    Preço: <span id="trabalhador3Price">1500</span><br>
+                    Gera: <span id="trabalhador3Value">8</span> c/s<br>
+                    Comprados: <span id="trabalhador3Count">0</span>
+                </p>
+            </div>
+        </div>
     </div>
-    <script>
-        function updateCookies() {
-            document.getElementById("cookies").textContent = cookies;
-        }
-        function update1() {
-            if (cookies < 10) {
-                alert("Não tens cookies suficientes");
-                return;
-            }
-            cookies = cookies - 10;
-            multiplicador = multiplicador + 1;
-            updateCookies();
-        }
-        function update2() {
-            if (cookies < 100) {
-                alert("Não tens cookies suficientes");
-                return;
-            }
-            cookies = cookies - 100;
-            multiplicador = multiplicador * 2;
-            updateCookies();
-        }
-        function update3() {
-            if (cookies < 1000) {
-                alert("Não tens cookies suficientes");
-                return;
-            }
-            cookies = cookies - 1000;
-            multiplicador = multiplicador * 4;
-            updateCookies();
-        }
-    </script>
 </body>
 </html>
