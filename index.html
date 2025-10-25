@@ -79,6 +79,29 @@
             background-color: #558b2f;
             transition: transform 0.1s ease;
         }
+        button.reset-button {
+            margin-top: 20px;
+            width: 150px;
+            height: 40px;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid #d32f2f;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+            transition: transform 0.1s ease;
+            background-color: #f44336;
+            color: white;
+            font-weight: 600;
+        }
+        button.reset-button:active {
+            transform: scale(0.95);
+        }
+        button.reset-button:hover {
+            background-color: #d32f2f;
+            transition: transform 0.1s ease;
+        }
         p {
             margin-bottom: 10px;
             margin-top: 10px;
@@ -172,6 +195,115 @@
         }
     </style>
     <script>
+        // salvar os dados do jogo
+        function saveGame() {
+            localStorage.setItem("cookies", cookies);
+            localStorage.setItem("multiplicador", multiplicador);
+            localStorage.setItem("update1Cost", update1Cost);
+            localStorage.setItem("update2Cost", update2Cost);
+            localStorage.setItem("update3Cost", update3Cost);
+            localStorage.setItem("update4Cost", update4Cost);
+            localStorage.setItem("update5Cost", update5Cost);
+            localStorage.setItem("trabalhador1Price", trabalhador1Price);
+            localStorage.setItem("trabalhador1BaseValue", trabalhador1BaseValue);
+            localStorage.setItem("trabalhador1Count", trabalhador1Count);
+            localStorage.setItem("trabalhador2Price", trabalhador2Price);
+            localStorage.setItem("trabalhador2BaseValue", trabalhador2BaseValue);
+            localStorage.setItem("trabalhador2Count", trabalhador2Count);
+            localStorage.setItem("trabalhador3Price", trabalhador3Price);
+            localStorage.setItem("trabalhador3BaseValue", trabalhador3BaseValue);
+            localStorage.setItem("trabalhador3Count", trabalhador3Count);
+            localStorage.setItem("totalCookiesPerSecond", totalCookiesPerSecond);
+        }
+        
+        // carregar os dados do jogo
+        function loadGame() {
+            const savedCookies = localStorage.getItem("cookies");
+            const savedMultiplicador = localStorage.getItem("multiplicador");
+            const savedUpdate1Cost = localStorage.getItem("update1Cost");
+            const savedUpdate2Cost = localStorage.getItem("update2Cost");
+            const savedUpdate3Cost = localStorage.getItem("update3Cost");
+            const savedUpdate4Cost = localStorage.getItem("update4Cost");
+            const savedUpdate5Cost = localStorage.getItem("update5Cost");
+            const savedTrabalhador1Price = localStorage.getItem("trabalhador1Price");
+            const savedTrabalhador1BaseValue = localStorage.getItem("trabalhador1BaseValue");
+            const savedTrabalhador1Count = localStorage.getItem("trabalhador1Count");
+            const savedTrabalhador2Price = localStorage.getItem("trabalhador2Price");
+            const savedTrabalhador2BaseValue = localStorage.getItem("trabalhador2BaseValue");
+            const savedTrabalhador2Count = localStorage.getItem("trabalhador2Count");
+            const savedTrabalhador3Price = localStorage.getItem("trabalhador3Price");
+            const savedTrabalhador3BaseValue = localStorage.getItem("trabalhador3BaseValue");
+            const savedTrabalhador3Count = localStorage.getItem("trabalhador3Count");
+            const savedTotalCookiesPerSecond = localStorage.getItem("totalCookiesPerSecond");
+            
+            // Converter para números, usando valores padrão se não existir save
+            cookies = savedCookies ? parseFloat(savedCookies) : 0;
+            multiplicador = savedMultiplicador ? parseFloat(savedMultiplicador) : 1;
+            update1Cost = savedUpdate1Cost ? parseFloat(savedUpdate1Cost) : 15;
+            update2Cost = savedUpdate2Cost ? parseFloat(savedUpdate2Cost) : 100;
+            update3Cost = savedUpdate3Cost ? parseFloat(savedUpdate3Cost) : 500;
+            update4Cost = savedUpdate4Cost ? parseFloat(savedUpdate4Cost) : 2000;
+            update5Cost = savedUpdate5Cost ? parseFloat(savedUpdate5Cost) : 10000;
+            trabalhador1Price = savedTrabalhador1Price ? parseFloat(savedTrabalhador1Price) : 50;
+            trabalhador1BaseValue = savedTrabalhador1BaseValue ? parseFloat(savedTrabalhador1BaseValue) : 0.5;
+            trabalhador1Count = savedTrabalhador1Count ? parseInt(savedTrabalhador1Count) : 0;
+            trabalhador2Price = savedTrabalhador2Price ? parseFloat(savedTrabalhador2Price) : 300;
+            trabalhador2BaseValue = savedTrabalhador2BaseValue ? parseFloat(savedTrabalhador2BaseValue) : 2;
+            trabalhador2Count = savedTrabalhador2Count ? parseInt(savedTrabalhador2Count) : 0;
+            trabalhador3Price = savedTrabalhador3Price ? parseFloat(savedTrabalhador3Price) : 1500;
+            trabalhador3BaseValue = savedTrabalhador3BaseValue ? parseFloat(savedTrabalhador3BaseValue) : 8;
+            trabalhador3Count = savedTrabalhador3Count ? parseInt(savedTrabalhador3Count) : 0;
+            totalCookiesPerSecond = savedTotalCookiesPerSecond ? parseFloat(savedTotalCookiesPerSecond) : 0;
+        }
+        
+        // inicializar o jogo
+        function initGame() {
+            loadGame();
+            updateCookies();
+        }
+        
+        // atualizar os dados do jogo
+        function updateGame() {
+            saveGame();
+            updateCookies();
+        }
+
+        // resetar o jogo
+        function resetGame() {
+            cookies = 0;
+            multiplicador = 1;
+            update1Cost = 15;
+            update2Cost = 100;
+            update3Cost = 500;
+            update4Cost = 2000;
+            update5Cost = 10000;
+            updateCookies();
+            saveGame(); // Salvar após reset
+        }
+        function resetTrabalhadores() {
+            trabalhador1Count = 0;
+            trabalhador2Count = 0;
+            trabalhador3Count = 0;
+            trabalhador1Price = 50;
+            trabalhador1BaseValue = 0.5;
+            trabalhador2Price = 300;
+            trabalhador2BaseValue = 2;
+            trabalhador3Price = 1500;
+            trabalhador3BaseValue = 8;
+            totalCookiesPerSecond = 0;
+            updateCookies();
+            saveGame(); // Salvar após reset
+        }
+        function resetAll() {
+            // Pedir confirmação antes de resetar
+            if (confirm("Tens a certeza de que queres resetar o jogo?\n\nTodos os teus cookies, upgrades e trabalhadores serão perdidos permanentemente!")) {
+                resetGame();
+                resetTrabalhadores();
+                updateCookies();
+                saveGame(); // Salvar após reset completo
+                alert("Jogo resetado com sucesso!");
+            }
+        }
         // Variáveis globais do jogo
         var cookies = 0;
         var multiplicador = 1;
@@ -240,12 +372,12 @@
 
             return Math.floor(num).toString();
         }
-
         
         // Função para clicar no cookie
         function clickCookie() {
             cookies = cookies + multiplicador;
             updateCookies();
+            saveGame(); // Salvar automaticamente após cada clique
         }
         
         // Função para atualizar a interface
@@ -277,57 +409,62 @@
         // Upgrades de multiplicador
         function update1() {
             if (cookies < update1Cost) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update1Cost) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update1Cost - cookies) + " cookies.");
                 return;
             }
             cookies = cookies - update1Cost;
             multiplicador = multiplicador + 1;
             update1Cost = Math.floor(update1Cost * 1.5);
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         function update2() {
             if (cookies < update2Cost) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update2Cost) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update2Cost - cookies) + " cookies.");
                 return;
             }
             cookies = cookies - update2Cost;
             multiplicador = multiplicador + 5;
             update2Cost = Math.floor(update2Cost * 1.8);
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         function update3() {
             if (cookies < update3Cost) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update3Cost) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update3Cost - cookies) + " cookies.");
                 return;
             }
             cookies = cookies - update3Cost;
             multiplicador = multiplicador * 2;
             update3Cost = Math.floor(update3Cost * 2);
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         function update4() {
             if (cookies < update4Cost) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update4Cost) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update4Cost - cookies) + " cookies.");
                 return;
             }
             cookies = cookies - update4Cost;
             multiplicador = multiplicador * 3;
             update4Cost = Math.floor(update4Cost * 2.5);
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         function update5() {
             if (cookies < update5Cost) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update5Cost) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(update5Cost - cookies) + " cookies.");
                 return;
             }
             cookies = cookies - update5Cost;
             multiplicador = multiplicador * 5;
             update5Cost = Math.floor(update5Cost * 3);
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         // Função para calcular o total de cookies por segundo
@@ -340,7 +477,7 @@
         // Trabalhador 1 - aumenta valor base em 3% a cada compra
         function buyTrabalhador1() {
             if (cookies < trabalhador1Price) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador1Price) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador1Price - cookies) + " cookies.");
                 return;
             }
             
@@ -355,12 +492,13 @@
             
             calculateTotalPerSecond();
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         // Trabalhador 2 - aumenta valor base em 5% a cada compra
         function buyTrabalhador2() {
             if (cookies < trabalhador2Price) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador2Price) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador2Price - cookies) + " cookies.");
                 return;
             }
             
@@ -375,12 +513,13 @@
             
             calculateTotalPerSecond();
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         // Trabalhador 3 - aumenta valor base em 7% a cada compra
         function buyTrabalhador3() {
             if (cookies < trabalhador3Price) {
-                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador3Price) + " cookies.");
+                alert("Não tens cookies suficientes! Precisas de " + formatNumber(trabalhador3Price - cookies) + " cookies.");
                 return;
             }
             
@@ -395,15 +534,19 @@
             
             calculateTotalPerSecond();
             updateCookies();
+            saveGame(); // Salvar automaticamente após compra
         }
         
         // Inicializar o jogo quando a página carregar
         window.onload = function() {
+            initGame(); // Carregar dados salvos e inicializar o jogo
+            
             // Gerar cookies automaticamente a cada segundo
             setInterval(function() {
                 if (totalCookiesPerSecond > 0) {
                     cookies += totalCookiesPerSecond;
                     updateCookies();
+                    saveGame(); // Salvar automaticamente a cada segundo quando há trabalhadores
                 }
             }, 1000);
         };
@@ -471,6 +614,7 @@
                 </p>
             </div>
         </div>
+        <button class="reset-button" onclick="resetAll()">Resetar Jogo</button>
     </div>
 </body>
 </html>
